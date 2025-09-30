@@ -8,12 +8,16 @@ import io
 
 class Zip2CSV(object):
     """class to transform alto2txt metadata files to a csv format"""
-    def __init__(self, nlp: str , directory: str='data'):
+    def __init__(self, nlp: str , directory: str='data', include_text: bool=True):
         """set location of zip files"""
         self.directory = Path(directory)
         self.nlp = nlp
         self.metadata = ZipFile(self.directory / 'metadata' / f'{self.nlp}_metadata.zip')
-        self.content = ZipFile(self.directory / 'plaintext' / f'{self.nlp}_plaintext.zip')
+        self.include_text = include_text
+        if self.include_text:
+            self.content = ZipFile(self.directory / 'plaintext' / f'{self.nlp}_plaintext.zip')
+        else: 
+            self.content = ''
 
     @property
     def xml_files(self):
@@ -32,8 +36,13 @@ class Zip2CSV(object):
         with self.metadata.open(file,'r') as in_xml:
             tree = etree.parse(in_xml)  
             for parent,fields in metadata_fields.items():
+                
                 for field in fields:
-                    metadata_dict[f'{parent}/{field}'] = tree.xpath(f'.//{parent}/{field}')[0].text
+    
+                    try:
+                        metadata_dict[f'{parent}/{field}'] = tree.xpath(f'.//{parent}/{field}')[0].text
+                    except:
+                        metadata_dict[f'{parent}/{field}'] = None
 
         return metadata_dict
 
@@ -43,9 +52,9 @@ class Zip2CSV(object):
         self.corpus = defaultdict(dict)
         for xml_file in tqdm_notebook(self.xml_files):
             self.corpus[xml_file] = self.extract_metadata(xml_file)
-           
-            with io.TextIOWrapper(self.content.open(xml_file[:-4].rstrip('_metadata')+'.txt')) as text: #,'r').read()
-                self.corpus[xml_file]['text'] = text.read()
+            if self.include_text:
+                with io.TextIOWrapper(self.content.open(xml_file[:-4].rstrip('_metadata')+'.txt')) as text: #,'r').read()
+                    self.corpus[xml_file]['text'] = text.read()
 
     def convert(self,output: str='.'):
         """convert a newspaper to a csv file
