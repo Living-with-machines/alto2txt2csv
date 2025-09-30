@@ -174,3 +174,4 @@ metadata/*
 metadata_*/
 *-metadata/*
 *-metadata-*.zip
+.DS_Store
