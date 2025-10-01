@@ -2,6 +2,14 @@
 
 This is a (very) small code library for converting and enhancing Historical British Newspapers. 
 
+## Data
+
+The newspaper data associated with these scripts can be found on Zenodo
+- Living with Machines Digitised Newspapers [link](https://zenodo.org/records/15056078)
+- Heritage Made Digital Digitised Newspapers [link](https://zenodo.org/records/15056046)
+
+## Overview
+
 This repository contains three notebooks.
 
 - `process_newspaper.ipynb`: convert alto2txt output to a structure csv file
