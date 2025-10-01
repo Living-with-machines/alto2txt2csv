@@ -169,3 +169,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+metadata/*
+metadata_*/
+*-metadata/*
+*-metadata-*.zip
+.DS_Store
