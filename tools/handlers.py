@@ -6,6 +6,11 @@ from collections import defaultdict
 import pandas as pd
 import io
 
+def add_context(df: pd.DataFrame, df_metadata: pd.DataFrame) -> pd.DataFrame:
+    df['month'] = df['date'].str[:7] # extract year-month from date
+    df = df.merge(df_metadata, right_on='month',left_on='month', how='left') # merge metadata to newspaper dataframe
+    return df # return the dataframe with added metadata
+
 class Zip2CSV(object):
     """class to transform alto2txt metadata files to a csv format"""
     def __init__(self, nlp: str , directory: str='data', include_text: bool=True):
